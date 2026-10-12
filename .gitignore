@@ -1,0 +1,22 @@
+# .gitignore: ficheiros que NÃO vão para o Git.
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Node / Vite
+node_modules/
+dist/
+*.local
+
+# Segredos (o .env.example vai, o .env não)
+.env
+!.env.example
+
+# Sistema operativo e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

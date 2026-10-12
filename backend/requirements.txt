@@ -1,0 +1,4 @@
+# requirements.txt: bibliotecas Python do backend. Instalar com: pip install -r requirements.txt
+Django==5.2.*            # framework web (ORM, rotas, testes)
+psycopg[binary]==3.2.*   # driver para o Django falar com o PostgreSQL
+python-dotenv==1.0.*     # lê as variáveis do ficheiro .env
