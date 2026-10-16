@@ -202,7 +202,7 @@ def get_results(poll):
     total = sum(o.vote_count for o in options)
 
     return {
-        "poll_id": poll.id,
+        "poll_id": str(poll.id),
         "total_votes": total,
         "options": [
             {

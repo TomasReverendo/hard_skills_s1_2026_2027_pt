@@ -1,5 +1,5 @@
 // types.ts — Tipos TypeScript que espelham as respostas JSON da API Django.
-// Se o backend mudar o formato (polls/serializers.py), atualiza aqui também.
+// Se o backend mudar o formato (polls/serializers.py), temos que alterar o formato aqui também.
 
 export type PollStatus = 'draft' | 'open' | 'closed'
 
@@ -9,7 +9,7 @@ export interface Option {
 }
 
 export interface Poll {
-  id: number
+  id: string // UUID, ex.: "3f2a9c1e-8b7d-4e21-a5f0-..."
   question: string
   status: PollStatus
   status_label: string // "Rascunho" | "Aberta" | "Fechada"
@@ -27,7 +27,7 @@ export interface OptionResult {
 }
 
 export interface PollResults {
-  poll_id: number
+  poll_id: string // UUID da votação
   total_votes: number
   options: OptionResult[]
 }

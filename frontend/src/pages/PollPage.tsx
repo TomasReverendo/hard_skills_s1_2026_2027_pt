@@ -13,10 +13,21 @@ import { usePolling } from '../hooks/usePolling'
 import { getPublicPoll, getPublicResults, submitVote } from '../services/api'
 import { getVoterToken } from '../services/voterToken'
 import type { Poll, PollResults } from '../types'
+import { backLink, button, buttonPrimary, fullWidth, pageNarrow, question, square } from '../ui'
 import { twoDigits } from '../utils'
 
+// Classes de uma opção de voto: a escolhida tem borda preta grossa e fundo cinzento.
+// (o padding da escolhida é 1px menor para compensar a borda de 2px e nada "saltar")
+function optionClass(selected: boolean) {
+  const base = 'flex cursor-pointer items-center gap-3 rounded-[3px] text-[0.9rem]'
+  return selected
+    ? `${base} border-2 border-ink bg-soft px-[calc(1rem-1px)] py-[calc(0.875rem-1px)]`
+    : `${base} border border-line px-4 py-3.5`
+}
+
 export default function PollPage() {
-  const pollId = Number(useParams().pollId) // o :pollId vem do URL /polls/:pollId
+  // o :pollId vem do URL /polls/:pollId e é um UUID (texto), ex.: 3f2a9c1e-8b7d-...
+  const pollId = useParams().pollId ?? ''
   const voterToken = getVoterToken()
 
   const [poll, setPoll] = useState<Poll | null>(null)
@@ -65,9 +76,9 @@ export default function PollPage() {
   // Ainda a carregar, ou erro ao carregar (ex.: votação não existe)
   if (!poll) {
     return (
-      <main className="page narrow">
-        <Link to="/" className="back">← Voltar à lista</Link>
-        {error ? <Message text={error} /> : <p className="muted">A carregar…</p>}
+      <main className={pageNarrow}>
+        <Link to="/" className={backLink}>← Voltar à lista</Link>
+        {error ? <Message text={error} /> : <p className="text-muted">A carregar…</p>}
       </main>
     )
   }
@@ -75,11 +86,11 @@ export default function PollPage() {
   // ---- Votação FECHADA: resultados finais ----
   if (poll.status === 'closed') {
     return (
-      <main className="page narrow">
-        <Link to="/" className="back">← Voltar à lista</Link>
+      <main className={pageNarrow}>
+        <Link to="/" className={backLink}>← Voltar à lista</Link>
         <StatusBadge status={poll.status} />
-        <h1 className="question">{poll.question}</h1>
-        {results ? <ResultsList results={results} /> : <p className="muted">A carregar…</p>}
+        <h1 className={question}>{poll.question}</h1>
+        {results ? <ResultsList results={results} /> : <p className="text-muted">A carregar…</p>}
       </main>
     )
   }
@@ -87,48 +98,51 @@ export default function PollPage() {
   // ---- Votação ABERTA e já votou: confirmação ----
   if (poll.has_voted) {
     return (
-      <main className="page narrow">
-        <Link to="/" className="back">← Voltar à lista</Link>
-        <div className="check-box" aria-hidden>✓</div>
-        <h1 className="question">Voto submetido</h1>
-        <p className="muted">
+      <main className={pageNarrow}>
+        <Link to="/" className={backLink}>← Voltar à lista</Link>
+        <div className="mb-5 grid h-10 w-10 place-items-center border-2 border-ink text-xl" aria-hidden>✓</div>
+        <h1 className={question}>Voto submetido</h1>
+        <p className="text-muted">
           {votedFor ? (
-            <>Obrigado! O teu voto na opção <strong>“{votedFor}”</strong> foi guardado.</>
+            <>Obrigado! O teu voto na opção <strong className="text-ink">“{votedFor}”</strong> foi guardado.</>
           ) : (
             'Obrigado! O teu voto já foi registado nesta votação.'
           )}
         </p>
-        <p className="note">Os resultados finais serão mostrados aqui assim que o anfitrião fechar a votação.</p>
-        <button className="btn btn-primary btn-block" onClick={loadPoll}>Verificar se já fechou</button>
-        <Link to="/" className="btn btn-block">Voltar à lista</Link>
+        <p className="mb-4 mt-7 border-l-2 border-ink bg-soft px-4 py-3.5 text-sm">
+          Os resultados finais serão mostrados aqui assim que o anfitrião fechar a votação.
+        </p>
+        <button className={`${buttonPrimary} ${fullWidth}`} onClick={loadPoll}>Verificar se já fechou</button>
+        <Link to="/" className={`${button} ${fullWidth}`}>Voltar à lista</Link>
       </main>
     )
   }
 
   // ---- Votação ABERTA e ainda não votou: formulário ----
   return (
-    <main className="page vote-page">
-      <Link to="/" className="back">← Voltar às votações</Link>
+    <main className="mx-auto w-full max-w-[840px] px-4 py-6 md:px-6 md:py-10">
+      <Link to="/" className={backLink}>← Voltar às votações</Link>
 
-      <div className="vote-layout">
+      {/* Telemóvel: empilhado. Computador: pergunta à esquerda, opções à direita */}
+      <div className="grid gap-6 md:grid-cols-[1fr_1.5fr] md:gap-16">
         <div>
-          <p className="live-label"><span className="square" aria-hidden /> Em direto</p>
-          <h1 className="vote-question">{poll.question}</h1>
-          <p className="muted">Seleciona uma opção e submete. Apenas um voto por participante.</p>
+          <p className="flex items-center gap-2 font-mono text-[0.72rem] font-bold uppercase text-ok">
+            <span className={square} aria-hidden /> Em direto
+          </p>
+          <h1 className="my-3 text-2xl font-medium leading-tight md:text-[2rem]">{poll.question}</h1>
+          <p className="text-muted">Seleciona uma opção e submete. Apenas um voto por participante.</p>
         </div>
 
         <form onSubmit={handleVote}>
-          <div className="options">
+          <div className="flex flex-col gap-2.5">
             {poll.options.map((option, index) => (
-              <label
-                key={option.id}
-                className={selected === option.id ? 'option selected' : 'option'}
-              >
-                <span className="mono muted small">{twoDigits(index)}</span>
-                <span className="option-text">{option.text}</span>
+              <label key={option.id} className={optionClass(selected === option.id)}>
+                <span className="font-mono text-xs text-muted">{twoDigits(index)}</span>
+                <span className="flex-1">{option.text}</span>
                 <input
                   type="radio"
                   name="option"
+                  className="h-4 w-4 accent-ink"
                   value={option.id}
                   checked={selected === option.id}
                   onChange={() => setSelected(option.id)}
@@ -138,7 +152,7 @@ export default function PollPage() {
           </div>
           <Message text={error} />
           {/* O botão só fica ativo depois de escolher uma opção */}
-          <button className="btn btn-primary btn-block" disabled={sending || selected === null}>
+          <button className={`${buttonPrimary} ${fullWidth}`} disabled={sending || selected === null}>
             {sending ? 'A enviar…' : 'Confirmar voto'}
           </button>
         </form>

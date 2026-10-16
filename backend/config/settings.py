@@ -25,7 +25,10 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-insecure-key-change-me")
 # DEBUG=True mostra erros detalhados. Nunca usar True em produção.
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# Nomes pelos quais o Django aceita ser chamado (proteção contra ataques ao cabeçalho Host).
+# "backend" é o nome do serviço no docker-compose: dentro do Docker, o proxy do Vite
+# chama o Django por http://backend:8000. Sem isto, o Django responde 400 Bad Request.
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 
 
 # ---------------------------------------------------------------------------

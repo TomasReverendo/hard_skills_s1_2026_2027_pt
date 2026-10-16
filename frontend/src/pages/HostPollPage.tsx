@@ -7,6 +7,7 @@ import Message from '../components/Message'
 import { usePolling } from '../hooks/usePolling'
 import { getHostPoll, getHostResults, updatePollStatus } from '../services/api'
 import type { Poll, PollResults, PollStatus } from '../types'
+import { backLink, button, buttonDangerOutline, buttonPrimary, eyebrow, hostBackground, page, square } from '../ui'
 
 const STEPS: { status: PollStatus; label: string }[] = [
   { status: 'draft', label: 'Rascunho' },
@@ -21,7 +22,7 @@ const TITLES: Record<PollStatus, string> = {
 }
 
 export default function HostPollPage() {
-  const pollId = Number(useParams().pollId)
+  const pollId = useParams().pollId ?? '' // UUID da votação, vindo do URL
 
   const [poll, setPoll] = useState<Poll | null>(null)
   const [results, setResults] = useState<PollResults | null>(null)
@@ -65,52 +66,61 @@ export default function HostPollPage() {
   const secondsAgo = lastSync ? Math.max(0, Math.round((now - lastSync.getTime()) / 1000)) : null
 
   return (
-    <main className="page host-page">
-      <Link to="/host" className="back">← Voltar ao painel</Link>
-      <Message text={error} />
+    <div className={hostBackground}>
+      <main className={page}>
+        <Link to="/host" className={backLink}>← Voltar ao painel</Link>
+        <Message text={error} />
 
-      {poll && results && (
-        <div className="panel">
-          <div className="panel-header">
-            <div className="panel-header-top">
-              <div>
-                <p className="eyebrow">{TITLES[poll.status]}</p>
-                <h1 className="question">{poll.question}</h1>
+        {poll && results && (
+          <div className="border border-line bg-white">
+            <div className="flex flex-col gap-4 border-b border-line p-5">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className={eyebrow}>{TITLES[poll.status]}</p>
+                  <h1 className="text-[1.4rem] font-medium">{poll.question}</h1>
+                </div>
+                <div className="flex items-center gap-3.5">
+                  {secondsAgo !== null && (
+                    <span className="font-mono text-xs text-muted">Última sincronização: há {secondsAgo}s</span>
+                  )}
+                  <button className={button} onClick={load}>↻ Atualizar dados</button>
+                </div>
               </div>
-              <div className="sync">
-                {secondsAgo !== null && (
-                  <span className="mono muted small">Última sincronização: há {secondsAgo}s</span>
+
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                {/* Indicador de estado: o estado atual fica a preto */}
+                <div className="flex divide-x divide-line border border-line" aria-label="Estado da votação">
+                  {STEPS.map((step) => (
+                    <span
+                      key={step.status}
+                      className={
+                        step.status === poll.status
+                          ? 'bg-ink px-4 py-2.5 font-mono text-[0.68rem] uppercase text-white'
+                          : 'px-4 py-2.5 font-mono text-[0.68rem] uppercase'
+                      }
+                    >
+                      {step.label}
+                    </span>
+                  ))}
+                </div>
+
+                {poll.status === 'draft' && (
+                  <button className={buttonPrimary} onClick={() => changeStatus('open')}>
+                    Abrir para votação
+                  </button>
                 )}
-                <button className="btn" onClick={load}>↻ Atualizar dados</button>
+                {poll.status === 'open' && (
+                  <button className={buttonDangerOutline} onClick={() => changeStatus('closed')}>
+                    <span className={square} aria-hidden /> Encerrar votação agora
+                  </button>
+                )}
               </div>
             </div>
 
-            <div className="panel-header-top">
-              {/* Indicador de estado: o estado atual fica a preto */}
-              <div className="steps" aria-label="Estado da votação">
-                {STEPS.map((step) => (
-                  <span key={step.status} className={step.status === poll.status ? 'step active' : 'step'}>
-                    {step.label}
-                  </span>
-                ))}
-              </div>
-
-              {poll.status === 'draft' && (
-                <button className="btn btn-primary" onClick={() => changeStatus('open')}>
-                  Abrir para votação
-                </button>
-              )}
-              {poll.status === 'open' && (
-                <button className="btn btn-danger-outline" onClick={() => changeStatus('closed')}>
-                  <span className="square red" aria-hidden /> Encerrar votação agora
-                </button>
-              )}
-            </div>
+            <LiveResults results={results} live={isOpen} />
           </div>
-
-          <LiveResults results={results} live={isOpen} />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </div>
   )
 }

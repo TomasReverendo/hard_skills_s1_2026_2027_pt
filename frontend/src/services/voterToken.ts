@@ -7,7 +7,7 @@
 // Limitação (explicada no README): basta abrir uma janela anónima, outro
 // navegador ou limpar o localStorage para obter um token novo e votar outra vez.
 
-const STORAGE_KEY = 'live-pulse-voter-token'
+const STORAGE_KEY = 'live-pulse-voter-token' // nome da chave no localStorage
 
 export function getVoterToken(): string {
   try {

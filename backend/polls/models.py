@@ -9,7 +9,13 @@ Três tabelas, com relações 1-para-N:
 - Uma opção tem vários votos.
 - Um voto pertence a UMA opção. A votação de um voto obtém-se via vote.option.poll,
   por isso não guardamos poll_id no Vote (evita informação duplicada = normalizado).
+
+A votação usa um UUID como chave primária (ex.: 3f2a9c1e-8b7d-4e21-...) em vez de
+um número sequencial (1, 2, 3...). Como o id aparece nos links (/polls/<id>),
+isto impede que alguém adivinhe ou percorra as outras votações mudando o número.
 """
+
+import uuid
 
 from django.db import models
 
@@ -23,6 +29,8 @@ class Poll(models.Model):
         OPEN = "open", "Aberta"
         CLOSED = "closed", "Fechada"
 
+    # UUID gerado automaticamente ao criar a votação (uuid4 = aleatório)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.CharField(max_length=200)
     status = models.CharField(
         max_length=10,

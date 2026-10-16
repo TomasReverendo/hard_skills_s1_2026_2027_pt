@@ -40,19 +40,19 @@ export async function getPublicPolls(): Promise<Poll[]> {
   return data.polls
 }
 
-export function getPublicPoll(pollId: number, voterToken: string): Promise<Poll> {
+export function getPublicPoll(pollId: string, voterToken: string): Promise<Poll> {
   // encodeURIComponent protege caracteres especiais no URL
   return request<Poll>(`/polls/${pollId}?voter_token=${encodeURIComponent(voterToken)}`)
 }
 
-export function submitVote(pollId: number, optionId: number, voterToken: string) {
+export function submitVote(pollId: string, optionId: number, voterToken: string) {
   return request<{ message: string }>(`/polls/${pollId}/votes`, {
     method: 'POST',
     body: JSON.stringify({ option_id: optionId, voter_token: voterToken }),
   })
 }
 
-export function getPublicResults(pollId: number): Promise<PollResults> {
+export function getPublicResults(pollId: string): Promise<PollResults> {
   return request<PollResults>(`/polls/${pollId}/results`)
 }
 
@@ -72,17 +72,17 @@ export function createPoll(question: string, options: string[]): Promise<Poll> {
   })
 }
 
-export function updatePollStatus(pollId: number, status: PollStatus): Promise<Poll> {
+export function updatePollStatus(pollId: string, status: PollStatus): Promise<Poll> {
   return request<Poll>(`/host/polls/${pollId}`, {
     method: 'PATCH',
     body: JSON.stringify({ status }),
   })
 }
 
-export function getHostResults(pollId: number): Promise<PollResults> {
+export function getHostResults(pollId: string): Promise<PollResults> {
   return request<PollResults>(`/host/polls/${pollId}/results`)
 }
 
-export function getHostPoll(pollId: number): Promise<Poll> {
+export function getHostPoll(pollId: string): Promise<Poll> {
   return request<Poll>(`/host/polls/${pollId}`)
 }

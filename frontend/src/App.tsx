@@ -10,17 +10,18 @@ import HostDashboard from './pages/HostDashboard'
 import HostPollPage from './pages/HostPollPage'
 import PollListPage from './pages/PollListPage'
 import PollPage from './pages/PollPage'
+import { page, pageTitle } from './ui'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<PollListPage />} />
+        <Route path="/" element={<PollListPage />} /> 
         <Route path="/polls/:pollId" element={<PollPage />} />
         <Route path="/host" element={<HostDashboard />} />
         <Route path="/host/polls/:pollId" element={<HostPollPage />} />
-        <Route path="*" element={<main className="page"><h1>Página não encontrada</h1></main>} />
+        <Route path="*" element={<main className={page}><h1 className={pageTitle}>Página não encontrada</h1></main>} />
       </Routes>
     </BrowserRouter>
   )

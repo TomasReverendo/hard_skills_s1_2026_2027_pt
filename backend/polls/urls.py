@@ -1,6 +1,8 @@
 """
 polls/urls.py — Mapa de rotas da API (todas com o prefixo /api/).
 
+<uuid:poll_id> só aceita um UUID válido; qualquer outra coisa dá 404 automaticamente.
+
 Público:
   GET    /api/polls                       lista Abertas + Fechadas
   GET    /api/polls/<id>                  detalhe de uma votação
@@ -22,11 +24,11 @@ from . import views
 urlpatterns = [
     # Público
     path("polls", views.public_poll_list),
-    path("polls/<int:poll_id>", views.public_poll_detail),
-    path("polls/<int:poll_id>/votes", views.public_vote),
-    path("polls/<int:poll_id>/results", views.public_results),
+    path("polls/<uuid:poll_id>", views.public_poll_detail),
+    path("polls/<uuid:poll_id>/votes", views.public_vote),
+    path("polls/<uuid:poll_id>/results", views.public_results),
     # Anfitrião
     path("host/polls", views.host_poll_list),
-    path("host/polls/<int:poll_id>", views.host_poll_detail),
-    path("host/polls/<int:poll_id>/results", views.host_results),
+    path("host/polls/<uuid:poll_id>", views.host_poll_detail),
+    path("host/polls/<uuid:poll_id>/results", views.host_results),
 ]

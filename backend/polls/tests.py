@@ -48,6 +48,12 @@ class PollApiTests(TestCase):
         self.assertEqual(poll["status"], "draft")
         self.assertEqual(len(poll["options"]), 2)
 
+    def test_poll_id_is_uuid(self):
+        poll = self.create_poll()
+        self.assertEqual(len(poll["id"]), 36)  # formato 8-4-4-4-12, ex.: 3f2a9c1e-8b7d-...
+        # um id numérico (o formato antigo) já não corresponde a nenhuma rota
+        self.assertEqual(self.client.get("/api/host/polls/1").status_code, 404)
+
     def test_public_list_hides_drafts(self):
         draft = self.create_poll("Rascunho?")
         opened = self.create_poll("Aberta?")

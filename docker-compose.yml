@@ -1,10 +1,18 @@
-# docker-compose.yml: arranca só a base de dados PostgreSQL num contentor.
-# Uso: docker compose up -d   (na raiz do projeto)
-# O backend e o frontend correm normalmente na tua máquina (ver README).
+# docker-compose.yml — Arranca os 3 serviços da aplicação com um só comando:
+#
+#     docker compose up --build      (ou simplesmente: make up)
+#
+#   db        PostgreSQL 16          http://localhost:5433  (porta do PC → 5432 no contentor)
+#   backend   Django (API)           http://localhost:8080  (porta do PC → 8000 no contentor)
+#   frontend  React + Vite           http://localhost:5173
+#
+# Dentro da rede do Docker, os serviços falam uns com os outros pelo NOME:
+# o backend liga-se a "db" e o frontend reencaminha /api para "backend".
+
 services:
   db:
     image: postgres:16-alpine
-    container_name: livepulse_postgres
+    container_name: livepulse_db
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -14,6 +22,37 @@ services:
       - "5433:5432"  # porta 5433 no PC (a 5432 pode estar ocupada por outro PostgreSQL)
     volumes:
       - postgres_data:/var/lib/postgresql/data  # os dados sobrevivem a reinícios
+    # Verifica se o PostgreSQL já aceita ligações (usado pelo depends_on do backend)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d livepulse"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  backend:
+    build: ./backend          # usa o backend/Dockerfile
+    container_name: livepulse_backend
+    environment:
+      POSTGRES_DB: livepulse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: db       # nome do serviço da base de dados
+      POSTGRES_PORT: "5432"   # porta DENTRO da rede do Docker
+    ports:
+      - "8080:8000"           # 8080 no PC (a 8000 costuma estar reservada no Windows)
+    depends_on:
+      db:
+        condition: service_healthy  # só arranca quando a BD estiver pronta
+
+  frontend:
+    build: ./frontend         # usa o frontend/Dockerfile
+    container_name: livepulse_frontend
+    environment:
+      API_TARGET: http://backend:8000  # para onde o proxy do Vite envia os pedidos /api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

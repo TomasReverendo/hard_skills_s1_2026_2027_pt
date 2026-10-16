@@ -1,0 +1,8 @@
+# .dockerignore — ficheiros que NÃO são copiados para a imagem Docker.
+# O venv é do teu PC (Windows) e não funciona dentro do contentor (Linux).
+venv
+.venv
+__pycache__
+*.pyc
+# O .env não entra na imagem: no Docker as variáveis vêm do docker-compose.yml
+.env

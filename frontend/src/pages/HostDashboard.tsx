@@ -7,7 +7,12 @@ import StatusBadge from '../components/StatusBadge'
 import { usePolling } from '../hooks/usePolling'
 import { getHostPolls, updatePollStatus } from '../services/api'
 import type { Poll } from '../types'
+import { buttonPrimary, eyebrow, hostBackground, linkButton, page, pageTitle } from '../ui'
 import { formatDate } from '../utils'
+
+// Classes repetidas da tabela
+const th = 'border-b border-line bg-soft px-4 py-3.5 text-left font-mono text-[0.65rem] font-normal uppercase text-muted'
+const td = 'border-b border-line px-4 py-4 whitespace-nowrap'
 
 export default function HostDashboard() {
   const [polls, setPolls] = useState<Poll[]>([])
@@ -43,86 +48,91 @@ export default function HostDashboard() {
   const activeCount = polls.filter((p) => p.status === 'open').length
   const totalVotes = polls.reduce((sum, p) => sum + (p.total_votes ?? 0), 0)
 
+  const stats = [
+    { label: 'Total de votações', value: polls.length },
+    { label: 'Ativa agora', value: activeCount },
+    { label: 'Total de votos acumulados', value: totalVotes },
+  ]
+
   return (
-    <main className="page host-page">
-      <div className="page-header">
-        <div>
-          <p className="eyebrow">Painel geral</p>
-          <h1>Votações</h1>
+    <div className={hostBackground}>
+      <main className={page}>
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <p className={eyebrow}>Painel geral</p>
+            <h1 className={pageTitle}>Votações</h1>
+          </div>
+          <button className={buttonPrimary} onClick={() => setShowModal(true)}>
+            + Criar votação
+          </button>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          + Criar votação
-        </button>
-      </div>
 
-      <Message text={error} />
+        <Message text={error} />
 
-      <div className="stats">
-        <div className="stat">
-          <p className="muted small">Total de votações</p>
-          <p className="big-number">{polls.length}</p>
+        {/* 3 caixas lado a lado no computador; divide-x desenha as linhas entre elas */}
+        <div className="mb-7 grid divide-y divide-line border border-line bg-white md:grid-cols-3 md:divide-x md:divide-y-0">
+          {stats.map((stat) => (
+            <div key={stat.label} className="px-4 py-5">
+              <p className="text-xs text-muted">{stat.label}</p>
+              <p className="mt-1 font-mono text-[1.6rem]">{stat.value}</p>
+            </div>
+          ))}
         </div>
-        <div className="stat">
-          <p className="muted small">Ativa agora</p>
-          <p className="big-number">{activeCount}</p>
-        </div>
-        <div className="stat">
-          <p className="muted small">Total de votos acumulados</p>
-          <p className="big-number">{totalVotes}</p>
-        </div>
-      </div>
 
-      <div className="table-wrapper">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Pergunta</th>
-              <th>Estado</th>
-              <th>N.º opções</th>
-              <th>Total votos</th>
-              <th>Criada em</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {polls.length === 0 && (
+        {/* overflow-x-auto: em ecrãs pequenos a tabela desliza na horizontal */}
+        <div className="overflow-x-auto border border-line bg-white">
+          <table className="w-full border-collapse text-sm">
+            <thead>
               <tr>
-                <td colSpan={6} className="muted">Ainda não há votações. Cria a primeira!</td>
+                <th className={th}>Pergunta</th>
+                <th className={th}>Estado</th>
+                <th className={th}>N.º opções</th>
+                <th className={th}>Total votos</th>
+                <th className={th}>Criada em</th>
+                <th className={th}>Ações</th>
               </tr>
-            )}
-            {polls.map((poll) => (
-              <tr key={poll.id}>
-                <td>{poll.question}</td>
-                <td><StatusBadge status={poll.status} /></td>
-                <td className="mono">{poll.options.length}</td>
-                <td className="mono">{poll.total_votes ?? 0}</td>
-                <td className="muted">{formatDate(poll.created_at)}</td>
-                <td>
-                  {/* A ação muda consoante o estado da votação */}
-                  {poll.status === 'draft' && (
-                    <button className="link-btn" onClick={() => openPoll(poll)}>
-                      Abrir para votação
-                    </button>
-                  )}
-                  {poll.status === 'open' && (
-                    <Link to={`/host/polls/${poll.id}`} className="link-btn green">
-                      Ver direto / Fechar
-                    </Link>
-                  )}
-                  {poll.status === 'closed' && (
-                    <Link to={`/host/polls/${poll.id}`} className="link-btn">Ver relatório</Link>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            {/* [&_tr:last-child_td]:border-b-0 = a última linha não tem borda em baixo */}
+            <tbody className="[&_tr:last-child_td]:border-b-0">
+              {polls.length === 0 && (
+                <tr>
+                  <td colSpan={6} className={`${td} text-muted`}>Ainda não há votações. Cria a primeira!</td>
+                </tr>
+              )}
+              {polls.map((poll) => (
+                <tr key={poll.id}>
+                  <td className={`${td} min-w-[240px] whitespace-normal`}>{poll.question}</td>
+                  <td className={td}><StatusBadge status={poll.status} /></td>
+                  <td className={`${td} font-mono`}>{poll.options.length}</td>
+                  <td className={`${td} font-mono`}>{poll.total_votes ?? 0}</td>
+                  <td className={`${td} text-muted`}>{formatDate(poll.created_at)}</td>
+                  <td className={td}>
+                    {/* A ação muda consoante o estado da votação */}
+                    {poll.status === 'draft' && (
+                      <button className={linkButton} onClick={() => openPoll(poll)}>
+                        Abrir para votação
+                      </button>
+                    )}
+                    {poll.status === 'open' && (
+                      <Link to={`/host/polls/${poll.id}`} className={`${linkButton} text-ok`}>
+                        Ver direto / Fechar
+                      </Link>
+                    )}
+                    {poll.status === 'closed' && (
+                      <Link to={`/host/polls/${poll.id}`} className={linkButton}>Ver relatório</Link>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      {/* O modal só existe no ecrã quando showModal é true */}
-      {showModal && (
-        <CreatePollModal onClose={() => setShowModal(false)} onCreated={loadPolls} />
-      )}
-    </main>
+        {/* O modal só existe no ecrã quando showModal é true */}
+        {showModal && (
+          <CreatePollModal onClose={() => setShowModal(false)} onCreated={loadPolls} />
+        )}
+      </main>
+    </div>
   )
 }

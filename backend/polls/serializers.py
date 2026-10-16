@@ -11,7 +11,7 @@ def option_to_dict(option):
 
 def poll_to_dict(poll):
     data = {
-        "id": poll.id,
+        "id": str(poll.id),                         # UUID convertido em texto
         "question": poll.question,
         "status": poll.status,                      # "draft" | "open" | "closed"
         "status_label": poll.get_status_display(),  # "Rascunho" | "Aberta" | "Fechada"

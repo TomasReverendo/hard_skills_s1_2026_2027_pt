@@ -4,6 +4,7 @@
 // (nunca se confia só no frontend). Se o backend recusar, mostramos o erro dele.
 import { useState, type FormEvent } from 'react'
 import { createPoll } from '../services/api'
+import { button, buttonDashed, buttonPrimary, iconButton, input, label } from '../ui'
 import { twoDigits } from '../utils'
 import Message from './Message'
 
@@ -55,26 +56,27 @@ export default function CreatePollModal({ onClose, onCreated }: Props) {
   }
 
   return (
-    // Fundo escuro: clicar fora da janela fecha-a
-    <div className="modal-backdrop" onClick={onClose}>
+    // Fundo escuro por cima da página (fixed = fica fixo no ecrã). Clicar fora fecha o modal.
+    <div className="fixed inset-0 grid place-items-center bg-black/25 p-4" onClick={onClose}>
       {/* stopPropagation: clicar DENTRO da janela não deve fechá-la */}
       <form
-        className="modal"
+        className="w-full max-w-[465px] border border-line bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)]"
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
-        <div className="modal-header">
-          <h2 id="modal-title">Configurar votação</h2>
-          <button type="button" className="icon-btn" onClick={onClose} aria-label="Fechar">✕</button>
+        <div className="flex items-center justify-between border-b border-line px-5 py-4">
+          <h2 id="modal-title" className="text-[1.1rem] font-medium">Configurar votação</h2>
+          <button type="button" className={iconButton} onClick={onClose} aria-label="Fechar">✕</button>
         </div>
 
-        <div className="modal-body">
-          <label htmlFor="question">Pergunta da votação *</label>
+        <div className="flex flex-col gap-2.5 p-5">
+          <label htmlFor="question" className={label}>Pergunta da votação *</label>
           <input
             id="question"
+            className={input}
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Escreve uma pergunta clara e direta"
@@ -82,15 +84,16 @@ export default function CreatePollModal({ onClose, onCreated }: Props) {
             autoFocus
           />
 
-          <div className="label-row">
-            <label>Opções de resposta</label>
-            <span className="mono muted small">{options.length}/{MAX_OPTIONS}</span>
+          <div className="mt-3 flex items-center justify-between">
+            <span className={label}>Opções de resposta</span>
+            <span className="font-mono text-xs text-muted">{options.length}/{MAX_OPTIONS}</span>
           </div>
 
           {options.map((option, index) => (
-            <div className="option-input" key={index}>
-              <span className="mono muted small">{twoDigits(index)}.</span>
+            <div className="flex items-center gap-2.5" key={index}>
+              <span className="font-mono text-xs text-muted">{twoDigits(index)}.</span>
               <input
+                className={input}
                 value={option}
                 onChange={(e) => updateOption(index, e.target.value)}
                 placeholder={`Opção ${index + 1}`}
@@ -98,7 +101,7 @@ export default function CreatePollModal({ onClose, onCreated }: Props) {
               />
               <button
                 type="button"
-                className="icon-btn"
+                className={iconButton}
                 onClick={() => removeOption(index)}
                 disabled={options.length <= MIN_OPTIONS}
                 aria-label={`Remover opção ${index + 1}`}
@@ -109,7 +112,7 @@ export default function CreatePollModal({ onClose, onCreated }: Props) {
           ))}
 
           {options.length < MAX_OPTIONS && (
-            <button type="button" className="btn btn-dashed" onClick={addOption}>
+            <button type="button" className={buttonDashed} onClick={addOption}>
               + Adicionar opção
             </button>
           )}
@@ -117,10 +120,10 @@ export default function CreatePollModal({ onClose, onCreated }: Props) {
           <Message text={error} />
         </div>
 
-        <div className="modal-footer">
-          <span className="muted small">Será guardada inicialmente como Rascunho.</span>
-          <button type="button" className="btn" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="btn btn-primary" disabled={saving}>
+        <div className="flex items-center gap-2.5 border-t border-line bg-soft px-5 py-3.5">
+          <span className="flex-1 text-xs text-muted">Será guardada inicialmente como Rascunho.</span>
+          <button type="button" className={button} onClick={onClose}>Cancelar</button>
+          <button type="submit" className={buttonPrimary} disabled={saving}>
             {saving ? 'A guardar…' : 'Guardar votação'}
           </button>
         </div>
