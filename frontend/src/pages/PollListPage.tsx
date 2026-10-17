@@ -1,4 +1,4 @@
-// pages/PollListPage.tsx — Página inicial do público: lista de votações Abertas e Fechadas.
+// pages/PollListPage.tsx: Página inicial do público: lista de votações Abertas e Fechadas.
 // (Os Rascunhos nunca chegam aqui: o backend já os filtra.)
 import { useCallback, useEffect, useState } from 'react'
 import Message from '../components/Message'

@@ -1,4 +1,4 @@
-# docker-compose.yml — Arranca os 3 serviços da aplicação com um só comando:
+# docker-compose.yml: Arranca os 3 serviços da aplicação com um só comando:
 #
 #     docker compose up --build      (ou simplesmente: make up)
 #

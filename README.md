@@ -16,9 +16,13 @@ Aplicação web full-stack para votações em direto num evento. Tem duas interf
 | Base de dados | **PostgreSQL 16** | Base de dados "a sério", com transações e bloqueios de linha (`SELECT ... FOR UPDATE`), que uso para impedir votos duplicados em pedidos simultâneos. |
 | Frontend | **React 18 + TypeScript + Vite** | Os tipos TS espelham o JSON da API e apanham erros ao compilar. O Vite arranca rápido e tem um proxy que evita configurar CORS. |
 | Rotas no frontend | **React Router** | Uma página por URL (`/polls/<uuid>`), por isso os links podem ser partilhados. |
-| Estado | **`useState` + `fetch`** | Chega para uma app deste tamanho. Não uso Redux nem TanStack Query. |
+| Estado | **`useState` + `fetch`** |  |
 | Execução | **Docker + docker-compose + Makefile** | Um só comando (`make up`) arranca a BD, o backend e o frontend, sem instalar Python, Node nem PostgreSQL no PC. O `Makefile` dá nomes curtos aos comandos do Docker. |
 | Estilos | **Tailwind CSS 4** | Os estilos ficam junto do JSX de cada componente (`className="flex gap-4 border"`), por isso não há um ficheiro CSS gigante para manter. As cores e os tipos de letra do Figma estão definidos uma vez no tema (`index.css`), e as combinações repetidas (botões, campos) estão em `ui.ts`. O Tailwind só gera o CSS das classes que são usadas. |
+
+### Porquê Docker
+
+O projeto tem três peças que precisam de versões certas para funcionar: Python 3.12 com Django, Node 22 com Vite, e PostgreSQL 16. Sem Docker, quem quiser correr o projeto tem de instalar tudo à mão, criar a base de dados, configurar a password e acertar as portas, e qualquer diferença na máquina pode dar erros. Senti isso durante o desenvolvimento: tinha um PostgreSQL antigo de outro projeto a ocupar a porta 5432 e o Windows bloqueava a porta 8000. Com o Docker, cada serviço corre num contentor isolado com as versões fixadas nos `Dockerfile`s, e o `docker-compose.yml` liga os três numa rede própria (o backend chega à BD pelo nome `db` e o frontend chega ao backend pelo nome `backend`). Assim, quem avalia o projeto só precisa do Docker Desktop e de um comando (`make up`) para ter tudo a correr exatamente como no meu computador. A opção sem Docker continua documentada abaixo para quem preferir.
 
 ---
 
@@ -38,7 +42,7 @@ make up          # ou, sem make:  docker compose up --build -d
 
 Depois abre **http://localhost:5173** (público) e **http://localhost:5173/host** (anfitrião).
 
-| Serviço | O que é | Porta no teu PC |
+| Serviço | O que é | Porta local |
 |---|---|---|
 | `db` | PostgreSQL 16 | 5433 |
 | `backend` | Django (API) | 8080 → http://localhost:8080/api/polls |
@@ -73,7 +77,7 @@ O backend só arranca quando a base de dados está pronta (`healthcheck`) e apli
 
 **Pré-requisitos:** Python 3.10+, Node.js 18+ e um PostgreSQL. O mais fácil é arrancar só a BD com Docker: `docker compose up -d db`.
 
-O PostgreSQL deste projeto fica na porta **5433** do teu PC, e não na 5432 habitual, para não colidir com outro PostgreSQL que já esteja a correr.
+O PostgreSQL deste projeto fica na porta **5433** da máquina, e não na 5432 habitual, para não colidir com outro PostgreSQL que já esteja a correr.
 
 **Backend (Django, porta 8080):**
 
@@ -93,7 +97,7 @@ python manage.py runserver 8080   # http://127.0.0.1:8080
 python manage.py test             # testes automáticos
 ```
 
-> Usamos a porta **8080** porque no Windows a 8000 é muitas vezes reservada pelo Hyper-V/WSL (erro *"You don't have permission to access that port"*). Se a 8080 também estiver reservada, `netsh interface ipv4 show excludedportrange protocol=tcp` mostra as portas bloqueadas.
+> Uso a porta **8080** porque no Windows a 8000 é muitas vezes reservada pelo Hyper-V/WSL (erro *"You don't have permission to access that port"*). Se a 8080 também estiver reservada, `netsh interface ipv4 show excludedportrange protocol=tcp` mostra as portas bloqueadas.
 
 **Frontend (React, porta 5173)**, noutro terminal:
 
@@ -180,13 +184,52 @@ Todas as respostas são JSON. Os erros vêm sempre no formato `{"error": "mensag
 | PATCH | `/api/host/polls/<uuid>` | Mudar estado `{status}` | 200, 400, 409 |
 | GET | `/api/host/polls/<uuid>/results` | Resultados (sempre) | 200, 404 |
 
-O `<uuid>` é o id da votação. No `urls.py` usamos o conversor `<uuid:poll_id>` do Django, por isso um id que não seja um UUID válido (ex.: `/api/polls/1`) dá logo 404.
+O `<uuid>` é o id da votação. No `urls.py` uso o conversor `<uuid:poll_id>` do Django, por isso um id que não seja um UUID válido (ex.: `/api/polls/1`) dá logo 404.
 
-Porque estes códigos:
+### Códigos HTTP usados
 
-- **404** num Rascunho pedido pelo público: para o público, um rascunho "não existe".
-- **403** nos resultados de uma votação Aberta: o recurso existe, mas o público ainda não o pode ver.
-- **409 Conflict** em "já votaste", "votação fechada" ou numa transição de estado inválida: o pedido está bem formado, mas choca com o estado atual.
+Cada resposta traz um código que diz ao cliente como correu o pedido. Os `2xx` são sucesso, os `4xx` são erros do cliente (o pedido tem algum problema) e os `5xx` são erros do servidor.
+
+| Código | Nome | Quando é devolvido nesta API |
+|---|---|---|
+| **200** | OK | O pedido correu bem (ler votações, mudar estado, ver resultados) |
+| **201** | Created | Foi criado algo novo: uma votação ou um voto |
+| **400** | Bad Request | Os dados enviados são inválidos: pergunta vazia, menos de 2 ou mais de 5 opções, opções repetidas, opção de outra votação, JSON mal formado |
+| **403** | Forbidden | O recurso existe mas ainda não pode ser visto: resultados de uma votação Aberta pedidos pelo público |
+| **404** | Not Found | O recurso não existe: votação inexistente, id que não é UUID, ou um Rascunho pedido pelo público (para o público, um rascunho "não existe") |
+| **409** | Conflict | O pedido está bem formado mas choca com o estado atual: "já votaste", votar numa votação Fechada, ou uma transição de estado inválida (ex.: Rascunho → Fechada) |
+| **500** | Internal Server Error | Erro inesperado no servidor. A API nunca o devolve de propósito: os dados inválidos são apanhados antes e dão 400 (há um teste que garante que JSON inválido não dá 500) |
+
+---
+
+## Testes
+
+Os testes estão em `backend/polls/tests.py` e usam o `TestCase` do Django. O `self.client` faz pedidos HTTP à API sem precisar do servidor ligado, e o pedido passa pelo caminho normal (`urls → views → services → models`). Cada teste corre numa base de dados temporária e vazia, criada e apagada pelo Django, por isso os dados reais nunca são tocados.
+
+```bash
+make test                     # com Docker
+python manage.py test         # sem Docker, dentro de backend/
+```
+
+| Teste | O que garante |
+|---|---|
+| **Nível 1** | |
+| `test_create_poll_starts_as_draft` | Uma votação nova começa em Rascunho e guarda todas as opções |
+| `test_poll_id_is_uuid` | O id é um UUID (36 caracteres) e um id numérico (`/1`) devolve 404 |
+| `test_public_list_hides_drafts` | O público não vê Rascunhos, nem na lista nem no detalhe (404) |
+| `test_host_list_shows_everything` | O anfitrião vê todas as votações, incluindo Rascunhos |
+| `test_status_flow_draft_open_closed` | O fluxo Rascunho → Aberta → Fechada funciona |
+| `test_cannot_go_backwards_or_skip` | Saltar de Rascunho para Fechada é recusado (409) |
+| `test_vote_and_results` | Os votos são contados e as percentagens calculadas (ex.: 2 em 3 = 66.7 %) |
+| `test_public_results_only_when_closed` | Os resultados públicos dão 403 com a votação Aberta e 200 depois de Fechada |
+| **Nível 2** | |
+| `test_one_vote_per_person` | O segundo voto do mesmo token é recusado (409), só fica 1 voto na BD e `has_voted` passa a `true` |
+| `test_backend_rejects_votes_on_draft_and_closed` | O backend recusa votos num Rascunho (404) e numa votação Fechada (409) |
+| `test_option_from_another_poll_is_rejected` | Não é possível votar com uma opção de outra votação (400) |
+| `test_validation_errors` | Pergunta vazia, 1 opção, 6 opções, opções repetidas ou opções que não são lista dão 400 e não gravam nada |
+| `test_invalid_json_returns_400` | Um corpo que não é JSON dá 400 e não um erro 500 |
+
+Os testes focam-se nas regras que **o backend tem de garantir sozinho**, porque o frontend pode ser contornado com pedidos diretos à API.
 
 ---
 
@@ -211,21 +254,11 @@ Fiz as quatro regras:
 - A página de resultados do anfitrião atualiza-se **a cada 2 s** enquanto a votação está aberta e mostra "Última sincronização: há Xs". A tabela do painel geral (totais de votos) atualiza-se a cada 5 s.
 - **Extra:** a página do público verifica a cada 3 s se a votação fechou e, quando fecha, mostra os resultados automaticamente. A lista de votações atualiza-se a cada 5 s.
 
-**Porquê polling e não WebSockets/SSE:**
-
-| | Polling | SSE | WebSockets |
-|---|---|---|---|
-| Direção | cliente pergunta | servidor → cliente | dois sentidos |
-| Backend extra | nenhum (usa os mesmos endpoints REST) | ligação longa por cliente; precisa de servidor ASGI | Django Channels + Redis |
-| Complexidade | muito baixa | média | alta |
-| Escalabilidade | pedidos repetidos, mesmo sem mudanças | boa | boa |
-
-Os dados só vão num sentido (servidor → ecrã) e o "tempo real" de uma votação numa sala não precisa de ser ao milissegundo, por isso o polling é suficiente e não exige infraestrutura nova. Com centenas de participantes eu passaria para **SSE**: encaixa no fluxo unidirecional e é mais simples do que WebSockets.
 
 ### Extras
 
 - ✅ **Versão responsiva** (mobile), sobretudo na interface do público.
-- ✅ **Testes automáticos** no backend (`make test`, 13 testes).
+- ✅ **Testes automáticos** no backend (`make test`, 13 testes, ver [Testes](#testes)).
 - ✅ **Docker / docker-compose**: `Dockerfile` no backend e no frontend, e um `docker-compose.yml` com os 3 serviços. Tudo arranca com `make up`.
 - ✅ **Makefile** com atalhos para os comandos do Docker.
 - ✅ **UUID nos links** das votações, em vez de ids numéricos.
@@ -248,10 +281,6 @@ Segui o protótipo Figma em todos os ecrãs: lista do público com filtro latera
 
 ## O que melhoraria com mais tempo
 
-- **SSE** em vez de polling, para escalar a muitos participantes.
 - **Autenticação do anfitrião.** Hoje qualquer pessoa que saiba o URL `/host` pode gerir as votações.
 - **Código QR** em cada votação, para o público entrar rapidamente.
 - **Temporizador** que fecha a votação automaticamente.
-- **Editar** uma votação enquanto está em Rascunho (existe no Figma).
-- **Testes de frontend** (Vitest + Testing Library).
-- **Imagem de produção do frontend:** hoje o contentor corre o servidor de desenvolvimento do Vite. Em produção faria `npm run build` e serviria a pasta `dist/` com o Nginx, que também faria de proxy para a API.

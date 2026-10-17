@@ -1,4 +1,4 @@
-// components/LiveResults.tsx — Resultados para o ANFITRIÃO (a qualquer momento).
+// components/LiveResults.tsx: Resultados para o ANFITRIÃO (a qualquer momento).
 // Layout do Figma: total grande à esquerda e uma linha por opção (A, B, C…) à direita.
 import type { PollResults } from '../types'
 import { bar, barFill, eyebrow } from '../ui'

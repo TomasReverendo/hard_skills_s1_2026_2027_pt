@@ -1,4 +1,4 @@
-// services/api.ts — Todas as chamadas HTTP ao backend estão aqui.
+// services/api.ts: Todas as chamadas HTTP ao backend estão aqui.
 // Os componentes nunca usam fetch diretamente: chamam estas funções.
 // Assim, se um URL mudar, só se altera este ficheiro.
 

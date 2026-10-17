@@ -1,4 +1,4 @@
-// App.tsx — Componente raiz: a barra do topo e o mapa de páginas (rotas).
+// App.tsx: Componente raiz: a barra do topo e o mapa de páginas (rotas).
 //
 //   /                    lista de votações (público)
 //   /polls/:pollId       votar / ver resultados (público)

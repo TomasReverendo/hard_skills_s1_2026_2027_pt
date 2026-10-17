@@ -1,4 +1,4 @@
-// pages/PollPage.tsx — Página de UMA votação, para o público.
+// pages/PollPage.tsx: Página de UMA votação, para o público.
 //
 // O que se mostra depende do estado:
 //   Aberta  + ainda não votou -> pergunta à esquerda, opções à direita, "Confirmar voto"
@@ -36,6 +36,8 @@ export default function PollPage() {
   const [votedFor, setVotedFor] = useState<string | null>(null) // texto da opção votada
   const [error, setError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
+  const [checking, setChecking] = useState(false) // true enquanto o botão "Verificar" espera pela resposta
+  const [lastCheck, setLastCheck] = useState<Date | null>(null) // hora da última verificação manual
 
   // Lê a votação; se estiver Fechada, lê também os resultados
   const loadPoll = useCallback(async () => {
@@ -52,9 +54,18 @@ export default function PollPage() {
     loadPoll()
   }, [loadPoll])
 
-  // Nível 3 (extra): enquanto a votação está aberta, verificamos a cada 3 s
+  // Nível 3 (extra): enquanto a votação está aberta, verifico a cada 3 s
   // se o anfitrião já a fechou; quando fecha, os resultados aparecem sozinhos.
   usePolling(loadPoll, 3000, poll?.status === 'open')
+
+  // Botão "Verificar se já fechou". Se a votação continuar aberta, o ecrã ficava igual e
+  // parecia que o clique não fazia nada, por isso mostro a hora a que verifiquei.
+  async function checkNow() {
+    setChecking(true)
+    await loadPoll() // se já tiver fechado, a página passa sozinha para os resultados
+    setLastCheck(new Date())
+    setChecking(false)
+  }
 
   async function handleVote(event: FormEvent) {
     event.preventDefault()
@@ -112,7 +123,15 @@ export default function PollPage() {
         <p className="mb-4 mt-7 border-l-2 border-ink bg-soft px-4 py-3.5 text-sm">
           Os resultados finais serão mostrados aqui assim que o anfitrião fechar a votação.
         </p>
-        <button className={`${buttonPrimary} ${fullWidth}`} onClick={loadPoll}>Verificar se já fechou</button>
+        <button className={`${buttonPrimary} ${fullWidth}`} onClick={checkNow} disabled={checking}>
+          {checking ? 'A verificar…' : 'Verificar se já fechou'}
+        </button>
+        {lastCheck && !checking && (
+          <p className="-mt-2 mb-2.5 text-center text-xs text-muted">
+            Ainda está aberta (verificado às {lastCheck.toLocaleTimeString('pt-PT')}).
+            A página também verifica sozinha a cada 3 s.
+          </p>
+        )}
         <Link to="/" className={`${button} ${fullWidth}`}>Voltar à lista</Link>
       </main>
     )

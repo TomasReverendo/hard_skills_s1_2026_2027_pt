@@ -1,7 +1,7 @@
-// components/CreatePollModal.tsx — Janela (modal) "Configurar votação", aberta pelo botão "+ Criar votação".
+// components/CreatePollModal.tsx: Janela (modal) "Configurar votação", aberta pelo botão "+ Criar votação".
 //
-// Validamos aqui para dar feedback imediato, MAS o backend volta a validar tudo
-// (nunca se confia só no frontend). Se o backend recusar, mostramos o erro dele.
+// Valido aqui para dar feedback imediato, mas o backend volta a validar tudo
+// (o frontend pode ser contornado). Se o backend recusar, mostro a mensagem de erro dele.
 import { useState, type FormEvent } from 'react'
 import { createPoll } from '../services/api'
 import { button, buttonDashed, buttonPrimary, iconButton, input, label } from '../ui'

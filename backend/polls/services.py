@@ -1,12 +1,12 @@
 """
-polls/services.py — Regras de negócio.
+polls/services.py: Regras de negócio.
 
 Toda a lógica "do domínio" está aqui (validar, mudar estado, votar, contar votos).
 As views (views.py) só tratam de HTTP: ler o pedido, chamar uma função daqui e
 devolver JSON. Assim cada camada tem uma só responsabilidade e esta parte pode
 ser testada sem HTTP.
 
-Quando uma regra é violada lançamos ServiceError com a mensagem e o código HTTP
+Quando uma regra é violada, lanço ServiceError com a mensagem e o código HTTP
 adequado; a view transforma isso numa resposta {"error": "..."}.
 """
 

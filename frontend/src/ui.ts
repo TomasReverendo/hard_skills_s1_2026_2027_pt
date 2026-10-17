@@ -1,7 +1,7 @@
-// ui.ts — Grupos de classes Tailwind reutilizados em vários componentes.
+// ui.ts: Grupos de classes Tailwind reutilizados em vários componentes.
 //
 // Com Tailwind, os estilos escrevem-se como classes no className.
-// Quando o mesmo conjunto se repete (botões, campos, títulos...), guardamo-lo
+// Quando o mesmo conjunto se repete (botões, campos, títulos...), guardo-o
 // aqui numa constante, para não copiar a mesma lista de classes para todo o lado.
 //
 // Nota: as classes têm de estar escritas por extenso (não montadas aos bocados),

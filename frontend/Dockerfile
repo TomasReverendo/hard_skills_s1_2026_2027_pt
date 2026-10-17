@@ -1,8 +1,8 @@
-# frontend/Dockerfile — Imagem do frontend (React + Vite).
+# frontend/Dockerfile: Imagem do frontend (React + Vite).
 #
 # Corre o servidor de desenvolvimento do Vite, igual a fazer "npm run dev" no PC.
-# É suficiente para avaliar o projeto localmente; em produção usaríamos
-# "npm run build" e serviríamos a pasta dist/ com um servidor como o Nginx.
+# É suficiente para avaliar o projeto localmente; em produção usaria
+# "npm run build" e serviria a pasta dist/ com um servidor como o Nginx.
 
 # Imagem base com Node.js 22 (versão "alpine" = Linux mínimo, imagem mais pequena)
 FROM node:22-alpine
@@ -11,7 +11,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # 1) Copiar só os ficheiros de dependências e instalá-las.
-#    Fica numa "camada" separada: se só mudares código, o Docker reaproveita
+#    Fica numa "camada" separada: se só o código mudar, o Docker reaproveita
 #    esta camada e não volta a correr o npm ci (builds muito mais rápidos).
 COPY package.json package-lock.json ./
 RUN npm ci

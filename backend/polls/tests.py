@@ -1,5 +1,5 @@
 """
-polls/tests.py — Testes automáticos da API.
+polls/tests.py: Testes automáticos da API.
 
 Correr com:   python manage.py test
 

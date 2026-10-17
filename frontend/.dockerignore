@@ -1,4 +1,4 @@
-# .dockerignore — ficheiros que NÃO são copiados para a imagem Docker.
+# .dockerignore: ficheiros que NÃO são copiados para a imagem Docker.
 # node_modules é instalado dentro do contentor (npm ci); copiar o do Windows estragava tudo.
 node_modules
 dist

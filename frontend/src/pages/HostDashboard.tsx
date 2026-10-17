@@ -1,4 +1,4 @@
-// pages/HostDashboard.tsx — Painel do anfitrião: estatísticas, tabela de votações e criação.
+// pages/HostDashboard.tsx: Painel do anfitrião: estatísticas, tabela de votações e criação.
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CreatePollModal from '../components/CreatePollModal'
@@ -28,7 +28,7 @@ export default function HostDashboard() {
     }
   }, [])
 
-  useEffect(() => {
+  useEffect(() => {  // Carrega a lista uma vez quando a página abre e depois volta a carregar a cada 5 s 
     loadPolls()
   }, [loadPolls])
 

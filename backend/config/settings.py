@@ -1,5 +1,5 @@
 """
-config/settings.py — Configuração global do projeto Django.
+config/settings.py: Configuração global do projeto Django.
 
 Mantivemos só o essencial: não há contas de utilizador nem templates HTML,
 porque o Django aqui serve APENAS uma API JSON. O frontend (React) é outra app.
@@ -37,11 +37,11 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 INSTALLED_APPS = [
     "django.contrib.contenttypes",  # necessário internamente pelo Django
     "django.contrib.staticfiles",
-    "polls",                        # a nossa app: votações, opções e votos
+    "polls",                        # app das votações, opções e votos
 ]
 
 # Middleware = "filtros" por onde passa cada pedido HTTP.
-# Não usamos sessões nem autenticação, por isso a lista é curta.
+# Não uso sessões nem autenticação, por isso a lista é curta.
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -50,7 +50,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Não renderizamos HTML no backend, mas o Django exige esta definição.
+# O backend não renderiza HTML, mas o Django exige esta definição.
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

@@ -1,13 +1,13 @@
 /*
-  index.css — Ponto de entrada do Tailwind CSS.
+  index.css: configuração do Tailwind CSS.
 
-  Já não escrevemos CSS à mão: os estilos estão diretamente nos componentes,
-  com classes do Tailwind (ex.: className="flex gap-4 border border-line").
-  Aqui só ficam:
+  Os estilos estão nos componentes, escritos como classes do Tailwind
+  (ex.: className="flex gap-4 border border-line"). Este ficheiro tem:
     1. a importação do Tailwind;
-    2. o "tema": as cores e os tipos de letra do protótipo Figma, com nomes nossos.
-       Cada cor definida aqui cria classes automaticamente:
+    2. o tema: as cores e os tipos de letra do protótipo Figma.
+       Cada cor definida aqui gera as classes correspondentes:
        --color-ink  ->  bg-ink, text-ink, border-ink, ...
+    3. os estilos base do <body>.
 */
 
 @import 'tailwindcss';

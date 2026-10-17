@@ -1,4 +1,4 @@
-// pages/HostPollPage.tsx — Uma votação vista pelo anfitrião: estado e resultados (a qualquer momento).
+// pages/HostPollPage.tsx: Uma votação vista pelo anfitrião: estado e resultados (a qualquer momento).
 // Nível 3: enquanto a votação está aberta, os resultados atualizam-se sozinhos a cada 2 s.
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'

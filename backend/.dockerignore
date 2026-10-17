@@ -1,5 +1,5 @@
-# .dockerignore — ficheiros que NÃO são copiados para a imagem Docker.
-# O venv é do teu PC (Windows) e não funciona dentro do contentor (Linux).
+# .dockerignore: ficheiros que NÃO são copiados para a imagem Docker.
+# O venv foi criado no Windows e não funciona dentro do contentor (Linux).
 venv
 .venv
 __pycache__

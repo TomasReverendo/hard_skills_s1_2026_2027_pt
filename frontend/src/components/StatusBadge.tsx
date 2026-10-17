@@ -1,4 +1,4 @@
-// components/StatusBadge.tsx — Etiqueta com o estado da votação (Rascunho / Aberta / Fechada).
+// components/StatusBadge.tsx: Etiqueta com o estado da votação (Rascunho / Aberta / Fechada).
 import type { PollStatus } from '../types'
 import { square } from '../ui'
 

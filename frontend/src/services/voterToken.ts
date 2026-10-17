@@ -1,6 +1,6 @@
-// services/voterToken.ts — Identificador anónimo deste navegador (Nível 2: "um voto por pessoa").
+// services/voterToken.ts: Identificador anónimo deste navegador (Nível 2: "um voto por pessoa").
 //
-// Na primeira visita geramos um UUID aleatório e guardamo-lo no localStorage.
+// Na primeira visita gero um UUID aleatório e guardo-o no localStorage.
 // É enviado com cada voto; o backend recusa um segundo voto do mesmo token
 // na mesma votação.
 //
@@ -19,7 +19,7 @@ export function getVoterToken(): string {
     return token
   } catch {
     // localStorage pode estar bloqueado (ex.: alguns modos privados).
-    // Nesse caso usamos um token só para esta sessão.
+    // Nesse caso uso um token só para esta sessão.
     return crypto.randomUUID()
   }
 }

@@ -1,4 +1,4 @@
-// components/Navbar.tsx — Barra do topo: logótipo e seletor Público / Anfitrião.
+// components/Navbar.tsx: Barra do topo: logótipo e seletor Público / Anfitrião.
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
 // Classes de um separador do seletor: o ativo fica branco e a negrito
@@ -9,7 +9,7 @@ function tabClass(active: boolean) {
 }
 
 export default function Navbar() {
-  // Estamos numa página do anfitrião se o URL começar por /host
+  // É uma página do anfitrião se o URL começar por /host
   const isHost = useLocation().pathname.startsWith('/host')
 
   return (

@@ -1,4 +1,4 @@
-# backend/Dockerfile — Imagem do backend (Python + Django).
+# backend/Dockerfile: Imagem do backend (Python + Django).
 
 # Imagem base com Python 3.12 ("slim" = versão leve)
 FROM python:3.12-slim
@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED=1 \
 # Pasta de trabalho dentro do contentor
 WORKDIR /app
 
-# 1) Instalar as dependências primeiro (camada reaproveitada se só mudares código)
+# 1) Instalar as dependências primeiro (a camada é reaproveitada se só o código mudar)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

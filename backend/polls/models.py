@@ -1,5 +1,5 @@
 """
-polls/models.py — Modelo de dados (tabelas da base de dados).
+polls/models.py: Modelo de dados (tabelas da base de dados).
 
 Três tabelas, com relações 1-para-N:
 
@@ -8,7 +8,7 @@ Três tabelas, com relações 1-para-N:
 - Uma votação tem várias opções.
 - Uma opção tem vários votos.
 - Um voto pertence a UMA opção. A votação de um voto obtém-se via vote.option.poll,
-  por isso não guardamos poll_id no Vote (evita informação duplicada = normalizado).
+  por isso não guardo poll_id no Vote (evita informação duplicada = normalizado).
 
 A votação usa um UUID como chave primária (ex.: 3f2a9c1e-8b7d-4e21-...) em vez de
 um número sequencial (1, 2, 3...). Como o id aparece nos links (/polls/<id>),
@@ -69,7 +69,7 @@ class Vote(models.Model):
 
     # Nível 2 — "um voto por pessoa".
     # O navegador gera um identificador aleatório (UUID), guarda-o em localStorage
-    # e envia-o com cada voto. Antes de gravar, verificamos se esse token já votou
+    # e envia-o com cada voto. Antes de gravar, verifico se esse token já votou
     # nesta votação (ver services.cast_vote).
     voter_token = models.CharField(max_length=64)
 

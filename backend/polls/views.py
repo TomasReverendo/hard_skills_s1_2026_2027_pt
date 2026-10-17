@@ -1,5 +1,5 @@
 """
-polls/views.py — Camada HTTP da API.
+polls/views.py: Camada HTTP da API.
 
 Cada view faz apenas três coisas:
   1. lê o pedido (URL, query string, corpo JSON)
@@ -10,7 +10,7 @@ Formato das respostas:
   - sucesso: o objeto pedido, ex. {"id": 1, "question": "...", ...}
   - erro:    {"error": "mensagem legível"}
 
-Nota: não usamos o middleware de CSRF porque a API não usa cookies nem sessões
+Não uso o middleware de CSRF porque a API não usa cookies nem sessões
 (não há login). O CSRF só é uma ameaça quando o navegador envia credenciais
 automaticamente.
 """
