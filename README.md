@@ -275,7 +275,6 @@ Segui o protótipo Figma em todos os ecrãs: lista do público com filtro latera
 - O botão "Atualizar" do público fica no cabeçalho da página, não na navbar.
 - Pus o anfitrião numa página separada (`/host`) sem autenticação, como o enunciado permite.
 - Uma votação nasce sempre em **Rascunho**, e as transições só avançam (Rascunho → Aberta → Fechada). Não se pode reabrir uma votação fechada, porque os resultados são "finais".
-- Não uso o middleware de CSRF do Django: a API não usa cookies nem sessões, por isso não há credenciais que o navegador envie automaticamente.
 
 ---
 

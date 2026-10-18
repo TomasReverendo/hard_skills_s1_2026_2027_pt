@@ -1,4 +1,3 @@
-// vite.config.ts: Configuração do Vite (servidor de desenvolvimento do frontend).
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'

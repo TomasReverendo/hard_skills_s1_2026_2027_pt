@@ -1,5 +1,4 @@
-// App.tsx: Componente raiz: a barra do topo e o mapa de páginas (rotas).
-//
+// Rotas da aplicação:
 //   /                    lista de votações (público)
 //   /polls/:pollId       votar / ver resultados (público)
 //   /host                painel do anfitrião

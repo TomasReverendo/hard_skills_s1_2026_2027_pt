@@ -1,5 +1,3 @@
-// pages/PollPage.tsx: Página de UMA votação, para o público.
-//
 // O que se mostra depende do estado:
 //   Aberta  + ainda não votou -> pergunta à esquerda, opções à direita, "Confirmar voto"
 //   Aberta  + já votou        -> "Voto submetido" (os resultados ficam escondidos)
@@ -94,7 +92,7 @@ export default function PollPage() {
     )
   }
 
-  // ---- Votação FECHADA: resultados finais ----
+  // Votação fechada: resultados finais
   if (poll.status === 'closed') {
     return (
       <main className={pageNarrow}>
@@ -106,7 +104,7 @@ export default function PollPage() {
     )
   }
 
-  // ---- Votação ABERTA e já votou: confirmação ----
+  // Votação aberta e já votou: confirmação
   if (poll.has_voted) {
     return (
       <main className={pageNarrow}>
@@ -137,7 +135,7 @@ export default function PollPage() {
     )
   }
 
-  // ---- Votação ABERTA e ainda não votou: formulário ----
+  // Votação aberta e ainda não votou: formulário
   return (
     <main className="mx-auto w-full max-w-[840px] px-4 py-6 md:px-6 md:py-10">
       <Link to="/" className={backLink}>← Voltar às votações</Link>

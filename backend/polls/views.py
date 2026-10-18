@@ -1,5 +1,5 @@
 """
-polls/views.py: Camada HTTP da API.
+Camada HTTP da API.
 
 Cada view faz apenas três coisas:
   1. lê o pedido (URL, query string, corpo JSON)
@@ -27,9 +27,7 @@ from .serializers import poll_to_dict
 from .services import ServiceError
 
 
-# ---------------------------------------------------------------------------
 # Utilitários
-# ---------------------------------------------------------------------------
 
 def handle_errors(view):
     """
@@ -56,14 +54,12 @@ def parse_json(request):
     return data
 
 
-# ===========================================================================
-# API DO PÚBLICO   (/api/polls/...)
-# ===========================================================================
+# API do público (/api/polls/...)
 
 @require_http_methods(["GET"])
 @handle_errors
 def public_poll_list(request):
-    """GET /api/polls — votações Abertas e Fechadas."""
+    """GET /api/polls: votações Abertas e Fechadas."""
     polls = services.list_public_polls()
     return JsonResponse({"polls": [poll_to_dict(p) for p in polls]})
 
@@ -96,7 +92,7 @@ def public_vote(request, poll_id):
 @require_http_methods(["GET"])
 @handle_errors
 def public_results(request, poll_id):
-    """GET /api/polls/<id>/results — só disponível quando a votação está Fechada."""
+    """GET /api/polls/<id>/results: só disponível quando a votação está Fechada."""
     poll = services.get_public_poll_or_404(poll_id)
     if poll.status != Poll.Status.CLOSED:
         # 403 Forbidden: o recurso existe, mas o público ainda não pode vê-lo
@@ -104,17 +100,15 @@ def public_results(request, poll_id):
     return JsonResponse(services.get_results(poll))
 
 
-# ===========================================================================
-# API DO ANFITRIÃO   (/api/host/polls/...)
+# API do anfitrião (/api/host/polls/...)
 # Sem autenticação, como o enunciado permite.
-# ===========================================================================
 
 @require_http_methods(["GET", "POST"])
 @handle_errors
 def host_poll_list(request):
     """
-    GET  /api/host/polls — todas as votações (incluindo Rascunhos)
-    POST /api/host/polls — cria uma votação
+    GET  /api/host/polls: todas as votações (incluindo Rascunhos)
+    POST /api/host/polls: cria uma votação
          Corpo: {"question": "...", "options": ["A", "B", ...]}
     """
     if request.method == "POST":
@@ -130,8 +124,8 @@ def host_poll_list(request):
 @handle_errors
 def host_poll_detail(request, poll_id):
     """
-    GET   /api/host/polls/<id> — detalhe de qualquer votação (incluindo Rascunho)
-    PATCH /api/host/polls/<id> — muda o estado
+    GET   /api/host/polls/<id>: detalhe de qualquer votação (incluindo Rascunho)
+    PATCH /api/host/polls/<id>: muda o estado
           Corpo: {"status": "open"}  ou  {"status": "closed"}
     """
     poll = services.get_poll_or_404(poll_id)
@@ -144,6 +138,6 @@ def host_poll_detail(request, poll_id):
 @require_http_methods(["GET"])
 @handle_errors
 def host_results(request, poll_id):
-    """GET /api/host/polls/<id>/results — o anfitrião vê sempre os resultados."""
+    """GET /api/host/polls/<id>/results: o anfitrião vê sempre os resultados."""
     poll = services.get_poll_or_404(poll_id)
     return JsonResponse(services.get_results(poll))

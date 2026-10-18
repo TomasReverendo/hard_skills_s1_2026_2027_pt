@@ -1,4 +1,3 @@
-// pages/HostDashboard.tsx: Painel do anfitrião: estatísticas, tabela de votações e criação.
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CreatePollModal from '../components/CreatePollModal'

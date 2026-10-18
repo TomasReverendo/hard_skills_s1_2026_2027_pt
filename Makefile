@@ -1,5 +1,3 @@
-# Makefile: Atalhos para os comandos do Docker.
-#
 # Nomes curtos para não ter de escrever os comandos completos
 # (ex.: "make up" em vez de "docker compose up --build -d").
 # Lista de comandos:  make help

@@ -1,5 +1,5 @@
 """
-config/settings.py: Configuração global do projeto Django.
+Configuração global do projeto Django.
 
 Mantivemos só o essencial: não há contas de utilizador nem templates HTML,
 porque o Django aqui serve APENAS uma API JSON. O frontend (React) é outra app.
@@ -31,9 +31,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 
 
-# ---------------------------------------------------------------------------
 # Apps instaladas
-# ---------------------------------------------------------------------------
 INSTALLED_APPS = [
     "django.contrib.contenttypes",  # necessário internamente pelo Django
     "django.contrib.staticfiles",
@@ -61,10 +59,8 @@ TEMPLATES = [
 ]
 
 
-# ---------------------------------------------------------------------------
 # Base de dados: PostgreSQL
 # Os valores por omissão batem certo com o docker-compose.yml na raiz.
-# ---------------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -77,9 +73,7 @@ DATABASES = {
 }
 
 
-# ---------------------------------------------------------------------------
 # Internacionalização
-# ---------------------------------------------------------------------------
 LANGUAGE_CODE = "pt-pt"
 TIME_ZONE = "Europe/Lisbon"
 USE_I18N = True

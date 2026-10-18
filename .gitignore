@@ -1,5 +1,3 @@
-# .gitignore: ficheiros que NÃO vão para o Git.
-
 # Python
 venv/
 .venv/

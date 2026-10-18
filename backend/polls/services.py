@@ -1,5 +1,5 @@
 """
-polls/services.py: Regras de negócio.
+Regras de negócio.
 
 Toda a lógica "do domínio" está aqui (validar, mudar estado, votar, contar votos).
 As views (views.py) só tratam de HTTP: ler o pedido, chamar uma função daqui e
@@ -37,9 +37,7 @@ class ServiceError(Exception):
         self.status_code = status_code
 
 
-# ---------------------------------------------------------------------------
 # Obter votações
-# ---------------------------------------------------------------------------
 
 def get_poll_or_404(poll_id):
     """Devolve a votação com este id, ou lança erro 404."""
@@ -74,9 +72,7 @@ def list_all_polls():
     )
 
 
-# ---------------------------------------------------------------------------
 # Criar votação
-# ---------------------------------------------------------------------------
 
 def create_poll(question, options):
     """
@@ -85,14 +81,14 @@ def create_poll(question, options):
     question: texto da pergunta
     options:  lista de textos, entre 2 e 5
     """
-    # --- validação da pergunta ---
+    # validação da pergunta
     if not isinstance(question, str) or not question.strip():
         raise ServiceError("A pergunta não pode estar vazia.")
     question = question.strip()
     if len(question) > MAX_QUESTION_LENGTH:
         raise ServiceError(f"A pergunta tem no máximo {MAX_QUESTION_LENGTH} caracteres.")
 
-    # --- validação das opções ---
+    # validação das opções
     if not isinstance(options, list):
         raise ServiceError("As opções têm de ser uma lista de textos.")
     # Remove espaços e ignora opções vazias (ex.: campos deixados em branco no formulário)
@@ -116,9 +112,7 @@ def create_poll(question, options):
     return get_poll_or_404(poll.id)  # volta a ler para trazer as opções
 
 
-# ---------------------------------------------------------------------------
 # Mudar estado
-# ---------------------------------------------------------------------------
 
 def change_status(poll, new_status):
     """Avança o estado da votação (Rascunho -> Aberta -> Fechada)."""
@@ -142,9 +136,7 @@ def change_status(poll, new_status):
     return poll
 
 
-# ---------------------------------------------------------------------------
 # Votar
-# ---------------------------------------------------------------------------
 
 def has_voted(poll, voter_token):
     """True se este token já votou nalguma opção desta votação."""
@@ -187,9 +179,7 @@ def cast_vote(poll_id, option_id, voter_token):
         return Vote.objects.create(option=option, voter_token=voter_token)
 
 
-# ---------------------------------------------------------------------------
 # Resultados
-# ---------------------------------------------------------------------------
 
 def get_results(poll):
     """

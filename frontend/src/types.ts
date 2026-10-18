@@ -1,4 +1,4 @@
-// types.ts: Tipos TypeScript que espelham as respostas JSON da API Django.
+// Tipos que espelham as respostas JSON da API.
 // Se o backend mudar o formato (polls/serializers.py), este ficheiro tem de ser atualizado também.
 
 export type PollStatus = 'draft' | 'open' | 'closed'

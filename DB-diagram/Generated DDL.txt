@@ -1,0 +1,26 @@
+CREATE TABLE polls_poll (
+	uuid	 BIGINT,
+	question	 VARCHAR(512),
+	status	 VARCHAR(512),
+	created_at TIMESTAMP,
+	PRIMARY KEY(uuid)
+);
+
+CREATE TABLE polls_option (
+	id		 BIGINT,
+	texto		 VARCHAR(512),
+	polls_poll_uuid BIGINT NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE polls_vote (
+	id		 BIGINT,
+	voter_token	 VARCHAR(512) NOT NULL,
+	created_at	 TIMESTAMP,
+	polls_option_id BIGINT NOT NULL,
+	PRIMARY KEY(id)
+);
+
+ALTER TABLE polls_option ADD CONSTRAINT polls_option_fk1 FOREIGN KEY (polls_poll_uuid) REFERENCES polls_poll(uuid);
+ALTER TABLE polls_vote ADD CONSTRAINT polls_vote_fk1 FOREIGN KEY (polls_option_id) REFERENCES polls_option(id);
+

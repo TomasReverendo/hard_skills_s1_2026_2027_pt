@@ -1,4 +1,3 @@
-// components/PollCard.tsx: Cartão de uma votação na lista do público.
 // O cartão inteiro é um link; o "botão" do rodapé é só visual.
 import { Link } from 'react-router-dom'
 import type { Poll } from '../types'

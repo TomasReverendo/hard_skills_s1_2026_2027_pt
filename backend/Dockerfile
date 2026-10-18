@@ -1,5 +1,3 @@
-# backend/Dockerfile: Imagem do backend (Python + Django).
-
 # Imagem base com Python 3.12 ("slim" = versão leve)
 FROM python:3.12-slim
 

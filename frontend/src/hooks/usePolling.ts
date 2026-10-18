@@ -1,5 +1,3 @@
-// hooks/usePolling.ts: Nível 3 (tempo real) com polling.
-//
 // Chama `callback` de X em X milissegundos enquanto `enabled` for true.
 // Escolhi polling em vez de WebSockets/SSE por ser o mais simples:
 // não precisa de nada novo no backend (usa os mesmos endpoints REST).

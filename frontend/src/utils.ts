@@ -1,5 +1,3 @@
-// utils.ts: Pequenas funções de formatação reutilizadas em vários componentes.
-
 /** true se as duas datas forem no mesmo dia do calendário */
 function sameDay(a: Date, b: Date): boolean {
   return a.toDateString() === b.toDateString()

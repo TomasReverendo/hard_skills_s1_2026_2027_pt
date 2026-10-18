@@ -1,9 +1,9 @@
-# docker-compose.yml: Arranca os 3 serviços da aplicação com um só comando:
+# Arranca os 3 serviços da aplicação com um só comando:
 #
 #     docker compose up --build      (ou simplesmente: make up)
 #
-#   db        PostgreSQL 16          http://localhost:5433  (porta do PC → 5432 no contentor)
-#   backend   Django (API)           http://localhost:8080  (porta do PC → 8000 no contentor)
+#   db        PostgreSQL 16          http://localhost:5433  (porta 5432 dentro do contentor)
+#   backend   Django (API)           http://localhost:8080  (porta 8000 dentro do contentor)
 #   frontend  React + Vite           http://localhost:5173
 #
 # Dentro da rede do Docker, os serviços falam uns com os outros pelo NOME:

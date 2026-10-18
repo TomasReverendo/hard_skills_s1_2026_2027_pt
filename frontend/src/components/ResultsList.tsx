@@ -1,4 +1,4 @@
-// components/ResultsList.tsx: Resultados finais para o PÚBLICO (votação fechada).
+// Resultados finais para o público (só com a votação fechada).
 // Layout do Figma: "TOTAL APURADO" em cima e uma barra por opção, com a vencedora destacada.
 // A "barra" é só uma <div> com largura = percentagem; não precisa de biblioteca de gráficos.
 import type { PollResults } from '../types'

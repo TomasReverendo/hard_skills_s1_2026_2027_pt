@@ -1,5 +1,3 @@
-# frontend/Dockerfile: Imagem do frontend (React + Vite).
-#
 # Corre o servidor de desenvolvimento do Vite, igual a fazer "npm run dev" no PC.
 # É suficiente para avaliar o projeto localmente; em produção usaria
 # "npm run build" e serviria a pasta dist/ com um servidor como o Nginx.

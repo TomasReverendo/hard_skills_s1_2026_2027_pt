@@ -1,4 +1,4 @@
-// services/voterToken.ts: Identificador anónimo deste navegador (Nível 2: "um voto por pessoa").
+// Identificador anónimo deste navegador (Nível 2: "um voto por pessoa").
 //
 // Na primeira visita gero um UUID aleatório e guardo-o no localStorage.
 // É enviado com cada voto; o backend recusa um segundo voto do mesmo token

@@ -1,4 +1,4 @@
-// components/LiveResults.tsx: Resultados para o ANFITRIÃO (a qualquer momento).
+// Resultados para o anfitrião (a qualquer momento, mesmo com a votação aberta).
 // Layout do Figma: total grande à esquerda e uma linha por opção (A, B, C…) à direita.
 import type { PollResults } from '../types'
 import { bar, barFill, eyebrow } from '../ui'

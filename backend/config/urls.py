@@ -1,5 +1,5 @@
 """
-config/urls.py: Ponto de entrada das rotas.
+Ponto de entrada das rotas.
 
 Todas as rotas da API começam por /api/ e estão definidas em polls/urls.py.
 """

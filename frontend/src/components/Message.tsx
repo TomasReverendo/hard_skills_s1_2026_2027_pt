@@ -1,5 +1,4 @@
-// components/Message.tsx: Caixa de mensagem de erro (ou informação).
-// Não mostra nada se `text` estiver vazio, por isso pode ser sempre renderizada.
+// Caixa de erro. Não mostra nada se `text` estiver vazio, por isso pode ser sempre renderizada.
 
 interface Props {
   text: string | null

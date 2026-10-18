@@ -1,5 +1,5 @@
 """
-polls/serializers.py: Converte objetos Python (modelos) em dicionários JSON.
+Converte objetos Python (modelos) em dicionários JSON.
 
 Fica separado para que o formato das respostas da API esteja num só sítio.
 """

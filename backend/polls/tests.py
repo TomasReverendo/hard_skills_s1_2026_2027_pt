@@ -1,5 +1,5 @@
 """
-polls/tests.py: Testes automáticos da API.
+Testes automáticos da API.
 
 Correr com:   python manage.py test
 
@@ -16,7 +16,7 @@ from .models import Poll, Vote
 
 class PollApiTests(TestCase):
 
-    # ---- utilitários para não repetir código --------------------------------
+    # utilitários para não repetir código
 
     def post(self, url, data):
         return self.client.post(url, json.dumps(data), content_type="application/json")
@@ -41,7 +41,7 @@ class PollApiTests(TestCase):
             {"option_id": poll["options"][option_index]["id"], "voter_token": token},
         )
 
-    # ---- Nível 1 -------------------------------------------------------------
+    # Nível 1
 
     def test_create_poll_starts_as_draft(self):
         poll = self.create_poll()
@@ -105,7 +105,7 @@ class PollApiTests(TestCase):
         self.close_poll(poll["id"])
         self.assertEqual(self.client.get(url).status_code, 200)  # fechada: visível
 
-    # ---- Nível 2 -------------------------------------------------------------
+    # Nível 2
 
     def test_one_vote_per_person(self):
         poll = self.create_poll()

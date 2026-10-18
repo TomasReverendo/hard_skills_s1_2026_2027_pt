@@ -1,4 +1,4 @@
-// services/api.ts: Todas as chamadas HTTP ao backend estão aqui.
+// Todas as chamadas HTTP ao backend estão aqui.
 // Os componentes nunca usam fetch diretamente: chamam estas funções.
 // Assim, se um URL mudar, só se altera este ficheiro.
 
@@ -31,9 +31,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return data as T
 }
 
-// ---------------------------------------------------------------------------
 // Público
-// ---------------------------------------------------------------------------
 
 export async function getPublicPolls(): Promise<Poll[]> {
   const data = await request<{ polls: Poll[] }>('/polls')
@@ -56,9 +54,7 @@ export function getPublicResults(pollId: string): Promise<PollResults> {
   return request<PollResults>(`/polls/${pollId}/results`)
 }
 
-// ---------------------------------------------------------------------------
 // Anfitrião
-// ---------------------------------------------------------------------------
 
 export async function getHostPolls(): Promise<Poll[]> {
   const data = await request<{ polls: Poll[] }>('/host/polls')

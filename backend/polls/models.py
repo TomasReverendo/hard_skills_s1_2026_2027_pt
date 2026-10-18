@@ -1,5 +1,5 @@
 """
-polls/models.py: Modelo de dados (tabelas da base de dados).
+Modelo de dados (tabelas da base de dados).
 
 Três tabelas, com relações 1-para-N:
 
@@ -67,7 +67,7 @@ class Vote(models.Model):
     option = models.ForeignKey(Option, on_delete=models.CASCADE, related_name="votes")
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Nível 2 — "um voto por pessoa".
+    # Nível 2: "um voto por pessoa".
     # O navegador gera um identificador aleatório (UUID), guarda-o em localStorage
     # e envia-o com cada voto. Antes de gravar, verifico se esse token já votou
     # nesta votação (ver services.cast_vote).

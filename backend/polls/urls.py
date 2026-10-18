@@ -1,5 +1,5 @@
 """
-polls/urls.py: Mapa de rotas da API (todas com o prefixo /api/).
+Mapa de rotas da API (todas com o prefixo /api/).
 
 <uuid:poll_id> só aceita um UUID válido; qualquer outra coisa dá 404 automaticamente.
 
