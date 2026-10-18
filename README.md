@@ -254,6 +254,8 @@ Fiz as quatro regras:
 - A página de resultados do anfitrião atualiza-se **a cada 2 s** enquanto a votação está aberta e mostra "Última sincronização: há Xs". A tabela do painel geral (totais de votos) atualiza-se a cada 5 s.
 - **Extra:** a página do público verifica a cada 3 s se a votação fechou e, quando fecha, mostra os resultados automaticamente. A lista de votações atualiza-se a cada 5 s.
 
+**Porquê polling:** os dados só vão do servidor para o ecrã e uns segundos de atraso não importam numa votação, por isso escolhi a opção mais simples, que usa os endpoints que já existiam; com muitos participantes passaria para SSE.
+
 
 ### Extras
 
